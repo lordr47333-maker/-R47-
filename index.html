@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>R47 - Dark Pro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="glass">
+  <h1>R47</h1>
+  <nav>
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="showSection('login')">Login</button>
+    <button onclick="showSection('signup')">Sign Up</button>
+    <button onclick="showSection('privacy')">Privacy</button>
+  </nav>
+</header>
+
+<main>
+
+<section id="home" class="card active">
+  <h2>Welcome to R47 🚀</h2>
+  <p>Next-gen dark UI experience.</p>
+</section>
+
+<section id="login" class="card hidden">
+  <h2>Login</h2>
+  <input type="text" id="loginUser" placeholder="Username">
+  <input type="password" id="loginPass" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <p id="loginMsg"></p>
+</section>
+
+<section id="signup" class="card hidden">
+  <h2>Create Account</h2>
+  <input type="text" id="signupUser" placeholder="Username">
+  <input type="password" id="signupPass" placeholder="Password">
+  <button onclick="signup()">Sign Up</button>
+  <p id="signupMsg"></p>
+</section>
+
+<section id="privacy" class="card hidden">
+  <h2>Privacy Policy</h2>
+  <p>R47 stores your data locally in your browser. No external servers.</p>
+</section>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
