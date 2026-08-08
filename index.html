@@ -2,7 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>R47 - Dark Pro</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,30 +27,30 @@
 
 <main>
 
-<section id="home" class="card active">
+<section id="home" class="card active fade">
   <h2>Welcome to R47 🚀</h2>
-  <p>Next-gen dark UI experience.</p>
+  <p>Next-gen premium dark UI experience.</p>
 </section>
 
-<section id="login" class="card hidden">
-  <h2>Login</h2>
+<section id="login" class="card hidden fade">
+  <h2><i class="ri-login-box-line"></i> Login</h2>
   <input type="text" id="loginUser" placeholder="Username">
   <input type="password" id="loginPass" placeholder="Password">
-  <button onclick="login()">Login</button>
+  <button class="primary" onclick="login()">Login</button>
   <p id="loginMsg"></p>
 </section>
 
-<section id="signup" class="card hidden">
-  <h2>Create Account</h2>
+<section id="signup" class="card hidden fade">
+  <h2><i class="ri-user-add-line"></i> Create Account</h2>
   <input type="text" id="signupUser" placeholder="Username">
   <input type="password" id="signupPass" placeholder="Password">
-  <button onclick="signup()">Sign Up</button>
+  <button class="primary" onclick="signup()">Sign Up</button>
   <p id="signupMsg"></p>
 </section>
 
-<section id="privacy" class="card hidden">
+<section id="privacy" class="card hidden fade">
   <h2>Privacy Policy</h2>
-  <p>R47 stores your data locally in your browser. No external servers.</p>
+  <p>Your data is stored locally in your browser. No external servers.</p>
 </section>
 
 </main>
