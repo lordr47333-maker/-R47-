@@ -1,34 +1,88 @@
+// SWITCH SECTIONS (smooth + active control)
 function showSection(id) {
-  let sections = document.querySelectorAll(".card");
-  sections.forEach(sec => sec.classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
+  const sections = document.querySelectorAll(".card");
+
+  sections.forEach(sec => {
+    sec.classList.remove("active");
+    sec.classList.add("hidden");
+  });
+
+  const active = document.getElementById(id);
+  active.classList.remove("hidden");
+  active.classList.add("active");
 }
 
-function signup() {
-  let user = document.getElementById("signupUser").value;
-  let pass = document.getElementById("signupPass").value;
+// SHOW MESSAGE (clean UX)
+function showMessage(elementId, message, color) {
+  const el = document.getElementById(elementId);
+  el.innerText = message;
+  el.style.color = color;
 
-  if (!user || !pass) {
-    document.getElementById("signupMsg").innerText = "Fill all fields!";
+  setTimeout(() => {
+    el.innerText = "";
+  }, 3000);
+}
+
+// SIGNUP (better validation)
+function signup() {
+  const user = document.getElementById("signupUser").value.trim();
+  const pass = document.getElementById("signupPass").value.trim();
+
+  if (user.length < 3) {
+    showMessage("signupMsg", "⚠ Username must be 3+ chars", "orange");
     return;
   }
 
-  localStorage.setItem("user", user);
-  localStorage.setItem("pass", pass);
+  if (pass.length < 4) {
+    showMessage("signupMsg", "⚠ Password too short", "orange");
+    return;
+  }
 
-  document.getElementById("signupMsg").innerText = "Account created ✅";
+  // Save as object (better structure)
+  const userData = {
+    username: user,
+    password: pass
+  };
+
+  localStorage.setItem("r47_user", JSON.stringify(userData));
+
+  showMessage("signupMsg", "✅ Account created!", "lightgreen");
+
+  // Auto switch to login
+  setTimeout(() => showSection("login"), 1500);
 }
 
+// LOGIN (improved logic)
 function login() {
-  let user = document.getElementById("loginUser").value;
-  let pass = document.getElementById("loginPass").value;
+  const user = document.getElementById("loginUser").value.trim();
+  const pass = document.getElementById("loginPass").value.trim();
 
-  let savedUser = localStorage.getItem("user");
-  let savedPass = localStorage.getItem("pass");
+  const savedData = JSON.parse(localStorage.getItem("r47_user"));
 
-  if (user === savedUser && pass === savedPass) {
-    document.getElementById("loginMsg").innerText = "Welcome back 🔥";
+  if (!savedData) {
+    showMessage("loginMsg", "⚠ No account found. Sign up first!", "orange");
+    return;
+  }
+
+  if (user === savedData.username && pass === savedData.password) {
+    showMessage("loginMsg", "🔥 Login successful!", "lightgreen");
+
+    // Save session
+    localStorage.setItem("r47_logged_in", "true");
+
+    // Example redirect (you can create dashboard.html)
+    setTimeout(() => {
+      showSection("home");
+    }, 1000);
+
   } else {
-    document.getElementById("loginMsg").innerText = "Invalid login ❌";
+    showMessage("loginMsg", "❌ Wrong username or password", "red");
   }
 }
+
+// AUTO LOGIN CHECK
+window.onload = () => {
+  if (localStorage.getItem("r47_logged_in") === "true") {
+    showSection("home");
+  }
+};
