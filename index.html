@@ -1,60 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- META -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>R47 - Dark Pro</title>
+  <meta name="description" content="R47 Dark Pro UI - Modern Login System">
+  
+  <title>R47 • Dark Pro</title>
 
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- FONTS -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Icons -->
+  <!-- ICONS -->
   <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
 
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<header class="glass">
-  <h1>R47</h1>
-  <nav>
-    <button onclick="showSection('home')">Home</button>
-    <button onclick="showSection('login')">Login</button>
-    <button onclick="showSection('signup')">Sign Up</button>
-    <button onclick="showSection('privacy')">Privacy</button>
-  </nav>
-</header>
+<!-- ================= APP WRAPPER ================= -->
+<div class="app">
 
-<main>
+  <!-- HEADER -->
+  <header class="glass">
+    <div class="logo">
+      <i class="ri-rocket-line"></i>
+      <span>R47</span>
+    </div>
 
-<section id="home" class="card active fade">
-  <h2>Welcome to R47 🚀</h2>
-  <p>Next-gen premium dark UI experience.</p>
-</section>
+    <nav>
+      <button onclick="showSection('home')" title="Home">
+        <i class="ri-home-4-line"></i>
+      </button>
 
-<section id="login" class="card hidden fade">
-  <h2><i class="ri-login-box-line"></i> Login</h2>
-  <input type="text" id="loginUser" placeholder="Username">
-  <input type="password" id="loginPass" placeholder="Password">
-  <button class="primary" onclick="login()">Login</button>
-  <p id="loginMsg"></p>
-</section>
+      <button onclick="showSection('login')" title="Login">
+        <i class="ri-login-box-line"></i>
+      </button>
 
-<section id="signup" class="card hidden fade">
-  <h2><i class="ri-user-add-line"></i> Create Account</h2>
-  <input type="text" id="signupUser" placeholder="Username">
-  <input type="password" id="signupPass" placeholder="Password">
-  <button class="primary" onclick="signup()">Sign Up</button>
-  <p id="signupMsg"></p>
-</section>
+      <button onclick="showSection('signup')" title="Sign Up">
+        <i class="ri-user-add-line"></i>
+      </button>
 
-<section id="privacy" class="card hidden fade">
-  <h2>Privacy Policy</h2>
-  <p>Your data is stored locally in your browser. No external servers.</p>
-</section>
+      <button onclick="showSection('privacy')" title="Privacy">
+        <i class="ri-shield-check-line"></i>
+      </button>
+    </nav>
+  </header>
 
-</main>
+  <!-- MAIN CONTENT -->
+  <main>
 
+    <!-- HOME -->
+    <section id="home" class="card active fade">
+      <h2>Welcome to R47 🚀</h2>
+      <p class="subtitle">Next-gen premium dark UI experience</p>
+
+      <div class="actions">
+        <button class="primary" onclick="showSection('login')">
+          Get Started
+        </button>
+
+        <button class="danger" onclick="logout()">
+          <i class="ri-logout-box-line"></i> Logout
+        </button>
+      </div>
+    </section>
+
+    <!-- LOGIN -->
+    <section id="login" class="card hidden fade">
+      <h2><i class="ri-login-box-line"></i> Login</h2>
+
+      <div class="form-group">
+        <input type="text" id="loginUser" placeholder="Username" required>
+      </div>
+
+      <div class="form-group">
+        <input type="password" id="loginPass" placeholder="Password" required>
+      </div>
+
+      <button class="primary full" onclick="login()">
+        Login
+      </button>
+
+      <p id="loginMsg" class="msg"></p>
+    </section>
+
+    <!-- SIGNUP -->
+    <section id="signup" class="card hidden fade">
+      <h2><i class="ri-user-add-line"></i> Create Account</h2>
+
+      <div class="form-group">
+        <input type="text" id="signupUser" placeholder="Username" required>
+      </div>
+
+      <div class="form-group">
+        <input type="password" id="signupPass" placeholder="Password" required>
+      </div>
+
+      <button class="primary full" onclick="signup()">
+        Sign Up
+      </button>
+
+      <p id="signupMsg" class="msg"></p>
+    </section>
+
+    <!-- PRIVACY -->
+    <section id="privacy" class="card hidden fade">
+      <h2><i class="ri-shield-check-line"></i> Privacy Policy</h2>
+
+      <p>
+        Your data is stored locally using browser storage.
+        This demo app does not connect to external servers.
+      </p>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 R47 • Built with Dark Pro UI</p>
+  </footer>
+
+</div>
+
+<!-- JS -->
 <script src="script.js"></script>
+
 </body>
 </html>
