@@ -1,152 +1,126 @@
-/* =========================
-SECTION SWITCH
-========================= */
+// ===============================
+// SWITCH SECTIONS (smooth + active)
+// ===============================
 function showSection(id) {
-const sections = document.querySelectorAll(".card");
+  const sections = document.querySelectorAll(".card");
 
-sections.forEach(sec => {
-sec.classList.remove("active");
-sec.classList.add("hidden");
-});
+  sections.forEach(sec => {
+    sec.classList.remove("active");
+    sec.classList.add("hidden");
+  });
 
-const active = document.getElementById(id);
-active.classList.remove("hidden");
-active.classList.add("active");
+  const active = document.getElementById(id);
+  active.classList.remove("hidden");
+  active.classList.add("active");
 }
 
-/* =========================
-MESSAGE SYSTEM
-========================= */
+// ===============================
+// SHOW MESSAGE (clean UX)
+// ===============================
 function showMessage(elementId, message, color) {
-const el = document.getElementById(elementId);
-el.innerText = message;
-el.style.color = color;
+  const el = document.getElementById(elementId);
+  el.innerText = message;
+  el.style.color = color;
 
-setTimeout(() => {
-el.innerText = "";
-}, 3000);
+  setTimeout(() => {
+    el.innerText = "";
+  }, 3000);
 }
 
-/* =========================
-STORAGE HELPERS
-========================= */
-function getUsers() {
-return JSON.parse(localStorage.getItem("r47_users")) || [];
-}
-
-function saveUsers(users) {
-localStorage.setItem("r47_users", JSON.stringify(users));
-}
-
-/* =========================
-SIGNUP (PRO)
-========================= */
+// ===============================
+// SIGNUP (multi-user support)
+// ===============================
 function signup() {
-const user = document.getElementById("signupUser").value.trim();
-const pass = document.getElementById("signupPass").value.trim();
+  const user = document.getElementById("signupUser").value.trim();
+  const pass = document.getElementById("signupPass").value.trim();
 
-if (user.length < 3) {
-showMessage("signupMsg", "⚠ Username must be 3+ chars", "orange");
-return;
+  if (user.length < 3) {
+    showMessage("signupMsg", "⚠ Username must be 3+ chars", "orange");
+    return;
+  }
+
+  if (pass.length < 4) {
+    showMessage("signupMsg", "⚠ Password too short", "orange");
+    return;
+  }
+
+  let users = JSON.parse(localStorage.getItem("r47_users")) || [];
+
+  // check if user exists
+  const exists = users.find(u => u.username === user);
+  if (exists) {
+    showMessage("signupMsg", "⚠ Username already exists", "orange");
+    return;
+  }
+
+  users.push({ username: user, password: pass });
+
+  localStorage.setItem("r47_users", JSON.stringify(users));
+
+  showMessage("signupMsg", "✅ Account created!", "lightgreen");
+
+  setTimeout(() => showSection("login"), 1500);
 }
 
-if (pass.length < 4) {
-showMessage("signupMsg", "⚠ Password must be 4+ chars", "orange");
-return;
-}
-
-let users = getUsers();
-
-// Check duplicate
-const exists = users.find(u => u.username === user);
-if (exists) {
-showMessage("signupMsg", "❌ Username already exists", "red");
-return;
-}
-
-// Save new user
-users.push({ username: user, password: pass });
-saveUsers(users);
-
-showMessage("signupMsg", "✅ Account created!", "lightgreen");
-
-// Clear inputs
-document.getElementById("signupUser").value = "";
-document.getElementById("signupPass").value = "";
-
-setTimeout(() => showSection("login"), 1200);
-}
-
-/* =========================
-LOGIN (PRO)
-========================= */
+// ===============================
+// LOGIN (multi-user + session)
+// ===============================
 function login() {
-const user = document.getElementById("loginUser").value.trim();
-const pass = document.getElementById("loginPass").value.trim();
+  const user = document.getElementById("loginUser").value.trim();
+  const pass = document.getElementById("loginPass").value.trim();
 
-const users = getUsers();
+  const users = JSON.parse(localStorage.getItem("r47_users")) || [];
 
-const validUser = users.find(
-u => u.username === user && u.password === pass
-);
+  const validUser = users.find(
+    u => u.username === user && u.password === pass
+  );
 
-if (validUser) {
-showMessage("loginMsg", "🔥 Login successful!", "lightgreen");
+  if (validUser) {
+    showMessage("loginMsg", "🔥 Login successful!", "lightgreen");
 
-// Save session
-sessionStorage.setItem("r47_logged_user", user);
+    localStorage.setItem("r47_logged_in", "true");
+    localStorage.setItem("r47_current_user", user);
 
-setTimeout(() => {
-  showSection("home");
-  updateUIAfterLogin();
-}, 800);
+    setTimeout(() => showSection("home"), 1000);
 
-} else {
-showMessage("loginMsg", "❌ Invalid username or password", "red");
-}
+  } else {
+    showMessage("loginMsg", "❌ Invalid credentials", "red");
+  }
 }
 
-/* =========================
-LOGOUT
-========================= */
+// ===============================
+// LOGOUT
+// ===============================
 function logout() {
-sessionStorage.removeItem("r47_logged_user");
-showSection("login");
+  localStorage.removeItem("r47_logged_in");
+  localStorage.removeItem("r47_current_user");
+
+  showSection("login");
 }
 
-/* =========================
-AUTO LOGIN
-========================= */
-window.onload = () => {
-const user = sessionStorage.getItem("r47_logged_user");
+// ===============================
+// ENTER KEY SUPPORT (PRO UX)
+// ===============================
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    const loginVisible = document
+      .getElementById("login")
+      .classList.contains("active");
 
-if (user) {
-showSection("home");
-updateUIAfterLogin();
-}
-};
+    const signupVisible = document
+      .getElementById("signup")
+      .classList.contains("active");
 
-/* =========================
-ENTER KEY SUPPORT
-========================= */
-document.addEventListener("keypress", function (e) {
-if (e.key === "Enter") {
-if (!document.getElementById("login").classList.contains("hidden")) {
-login();
-}
-if (!document.getElementById("signup").classList.contains("hidden")) {
-signup();
-}
-}
+    if (loginVisible) login();
+    if (signupVisible) signup();
+  }
 });
 
-/* =========================
-UI UPDATE AFTER LOGIN
-========================= */
-function updateUIAfterLogin() {
-const user = sessionStorage.getItem("r47_logged_user");
-
-if (user) {
-document.querySelector("#home h2").innerText = "Welcome " + user + " 🚀";
-}
-}
+// ===============================
+// AUTO LOGIN CHECK
+// ===============================
+window.onload = () => {
+  if (localStorage.getItem("r47_logged_in") === "true") {
+    showSection("home");
+  }
+};
