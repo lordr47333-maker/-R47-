@@ -1,6 +1,6 @@
-// ===============================
-// SWITCH SECTIONS (smooth + active)
-// ===============================
+/* =========================
+SECTION SWITCH (with animation reset)
+========================= */
 function showSection(id) {
   const sections = document.querySelectorAll(".card");
 
@@ -11,25 +11,42 @@ function showSection(id) {
 
   const active = document.getElementById(id);
   active.classList.remove("hidden");
-  active.classList.add("active");
+
+  // small delay for smooth animation
+  setTimeout(() => {
+    active.classList.add("active");
+  }, 10);
 }
 
-// ===============================
-// SHOW MESSAGE (clean UX)
-// ===============================
+/* =========================
+MESSAGE SYSTEM (improved UX)
+========================= */
 function showMessage(elementId, message, color) {
   const el = document.getElementById(elementId);
+
   el.innerText = message;
   el.style.color = color;
+  el.style.opacity = "1";
 
   setTimeout(() => {
-    el.innerText = "";
-  }, 3000);
+    el.style.opacity = "0";
+  }, 2500);
 }
 
-// ===============================
-// SIGNUP (multi-user support)
-// ===============================
+/* =========================
+STORAGE HELPERS
+========================= */
+function getUsers() {
+  return JSON.parse(localStorage.getItem("r47_users")) || [];
+}
+
+function saveUsers(users) {
+  localStorage.setItem("r47_users", JSON.stringify(users));
+}
+
+/* =========================
+SIGNUP (PRO++)
+========================= */
 function signup() {
   const user = document.getElementById("signupUser").value.trim();
   const pass = document.getElementById("signupPass").value.trim();
@@ -40,36 +57,38 @@ function signup() {
   }
 
   if (pass.length < 4) {
-    showMessage("signupMsg", "⚠ Password too short", "orange");
+    showMessage("signupMsg", "⚠ Password must be 4+ chars", "orange");
     return;
   }
 
-  let users = JSON.parse(localStorage.getItem("r47_users")) || [];
+  let users = getUsers();
 
-  // check if user exists
   const exists = users.find(u => u.username === user);
   if (exists) {
-    showMessage("signupMsg", "⚠ Username already exists", "orange");
+    showMessage("signupMsg", "❌ Username already exists", "red");
     return;
   }
 
   users.push({ username: user, password: pass });
-
-  localStorage.setItem("r47_users", JSON.stringify(users));
+  saveUsers(users);
 
   showMessage("signupMsg", "✅ Account created!", "lightgreen");
 
-  setTimeout(() => showSection("login"), 1500);
+  // clear inputs
+  document.getElementById("signupUser").value = "";
+  document.getElementById("signupPass").value = "";
+
+  setTimeout(() => showSection("login"), 1200);
 }
 
-// ===============================
-// LOGIN (multi-user + session)
-// ===============================
+/* =========================
+LOGIN (PRO++)
+========================= */
 function login() {
   const user = document.getElementById("loginUser").value.trim();
   const pass = document.getElementById("loginPass").value.trim();
 
-  const users = JSON.parse(localStorage.getItem("r47_users")) || [];
+  const users = getUsers();
 
   const validUser = users.find(
     u => u.username === user && u.password === pass
@@ -78,49 +97,85 @@ function login() {
   if (validUser) {
     showMessage("loginMsg", "🔥 Login successful!", "lightgreen");
 
-    localStorage.setItem("r47_logged_in", "true");
-    localStorage.setItem("r47_current_user", user);
+    // Save session
+    sessionStorage.setItem("r47_logged_user", user);
 
-    setTimeout(() => showSection("home"), 1000);
+    setTimeout(() => {
+      showSection("home");
+      updateUIAfterLogin();
+    }, 800);
 
   } else {
-    showMessage("loginMsg", "❌ Invalid credentials", "red");
+    showMessage("loginMsg", "❌ Invalid username or password", "red");
   }
 }
 
-// ===============================
-// LOGOUT
-// ===============================
+/* =========================
+LOGOUT (clean reset)
+========================= */
 function logout() {
-  localStorage.removeItem("r47_logged_in");
-  localStorage.removeItem("r47_current_user");
+  sessionStorage.removeItem("r47_logged_user");
+
+  // reset UI text
+  document.querySelector("#home h2").innerText = "Welcome to R47 🚀";
 
   showSection("login");
 }
 
-// ===============================
-// ENTER KEY SUPPORT (PRO UX)
-// ===============================
+/* =========================
+AUTO LOGIN
+========================= */
+window.onload = () => {
+  const user = sessionStorage.getItem("r47_logged_user");
+
+  if (user) {
+    showSection("home");
+    updateUIAfterLogin();
+  }
+};
+
+/* =========================
+ENTER KEY SUPPORT (improved)
+========================= */
 document.addEventListener("keydown", function (e) {
   if (e.key === "Enter") {
-    const loginVisible = document
-      .getElementById("login")
-      .classList.contains("active");
 
-    const signupVisible = document
-      .getElementById("signup")
-      .classList.contains("active");
+    if (!document.getElementById("login").classList.contains("hidden")) {
+      login();
+    }
 
-    if (loginVisible) login();
-    if (signupVisible) signup();
+    if (!document.getElementById("signup").classList.contains("hidden")) {
+      signup();
+    }
   }
 });
 
-// ===============================
-// AUTO LOGIN CHECK
-// ===============================
-window.onload = () => {
-  if (localStorage.getItem("r47_logged_in") === "true") {
-    showSection("home");
+/* =========================
+UI UPDATE AFTER LOGIN
+========================= */
+function updateUIAfterLogin() {
+  const user = sessionStorage.getItem("r47_logged_user");
+
+  if (user) {
+    document.querySelector("#home h2").innerText = `Welcome ${user} 🚀`;
   }
-};
+}
+
+/* =========================
+EXTRA PRO FEATURE (focus first input)
+========================= */
+function focusInput(sectionId) {
+  setTimeout(() => {
+    const section = document.getElementById(sectionId);
+    const input = section.querySelector("input");
+    if (input) input.focus();
+  }, 200);
+}
+
+// hook into navigation (optional)
+document.querySelectorAll("nav button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const target = btn.getAttribute("onclick").match(/'(.*?)'/)[1];
+    focusInput(target);
+  });
+});
